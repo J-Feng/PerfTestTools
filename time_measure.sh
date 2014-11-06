@@ -13,36 +13,36 @@ get_time_ms()
 
 
 ## Use macros to record input vars
-# TODO: this should be input parameters
-LOG_TAG=TestDecode
-LOG_FILE="testdecode.log"
-START_LOG=">>>decode bitmap"
-END_LOG="<<<decode bitmap"
-#PACKAGE_NAME=$2
-#COMPONENT_NAME=$3
-#
-#
-### Test and capture log
-#adb root
-#adb remount
-#
-#adb logcat -c
-#adb logcat -v threadtime $LOG_TAG:V *:S > $LOG_FILE.log &
-#logcat_pid=$!
-#
-## TODO: test mode should be configured, reboot or just relaunch the app
-#cnt=$1
-#while [ $cnt -gt 0 ]
-#do
-#    adb shell am start -W -n $PACKAGE_NAME/$COMPONENT_NAME
-#    adb shell sleep 2
-#    adb shell kill `adb shell ps | grep "com.sprd.testdecode" | awk '{print $2}'`
-#    adb shell sleep 2
-#    ((cnt-=1))
-#done
-#
-## Testing is over, kill logcat
-#sudo kill -9 $logcat_pid
+# TODO: this should be input parameters, or get from a config file
+LOG_TAG=$1
+LOG_FILE=$2
+START_LOG=$3
+END_LOG=$4
+PACKAGE_NAME=$5
+COMPONENT_NAME=$6
+
+
+## Test and capture log
+adb root
+adb remount
+
+adb logcat -c
+adb logcat -v threadtime $LOG_TAG:V *:S > $LOG_FILE &
+logcat_pid=$!
+
+# TODO: test mode should be configured, reboot or just relaunch the app
+cnt=$7
+while [ $cnt -gt 0 ]
+do
+    adb shell am start -W -n $PACKAGE_NAME/$COMPONENT_NAME
+    adb shell sleep 2
+    adb shell kill `adb shell ps | grep $PACKAGE_NAME | awk '{print $2}'`
+    adb shell sleep 2
+    ((cnt-=1))
+done
+
+# Testing is over, kill logcat
+sudo kill -9 $logcat_pid
 
 
 ## Data processing
